@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+  <header class="logo-title-header">
+    <div class="logo-title-container">
+      <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo"><h3>თქვენ ეძებთ "{{ search_query }}"</h3></div>
+
+  {% if results %}
+    <div class="row">
+      {% for item in results %}
+        <div class="col-sm-3 mb-3" style="padding-top: 25px;">
+          <div class="card h-100">
+            {% for image in item.images %}
+          <div class="carousel-item{% if loop.first %} active{% endif %}">
+            <img src="{{ url_for('static', filename=image.image_path.replace('\\', '/')) }}" alt="{{ item.name }}" class="d-block w-100 card-img-top">
+          </div>
+          {% endfor %}
+            <div class="card-body d-flex flex-column justify-content-between">
+              <h5 class="card-title">{{ item.name }}</h5>
+              <p class="card-text">{{ item.description }}</p>
+              <p class="card-text">Price: {{ item.price }}₾</p>
+              <a href="{{ url_for('views.item_detail', item_type=item.__class__.__name__.lower(), item_id=item.id) }}" class="btn btn-primary">დაწვრილებით</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No results found for "{{ search_query }}".</p>
+  {% endif %}
+  <style>
+.logo-title-header {
+  text-align: left; /* Align the logo and title to the right side */
+  padding: 20px; /* Add padding to create spacing */
+}
+
+.logo-title-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 100px;
+  height: auto;
+  margin-right: 10px; /* Add spacing between logo and title */
+}
+h3{
+  color: black;
+}
+
+      .card {
+    height: 400px; 
+    
+    background-color: #D7C9BC;
+    border-radius: 10px;
+    box-shadow: 5px 5px #888888;
+    transition: 0.4s ease-out;
+    position: relative;
+    left: 0px;
+    display: flex; /* Set a fixed height for the cards */
+  }
+  .card:not(:first-child) {
+    margin-left: 50px;
+  }
+  .card-img-top {
+    height: 200px; /* Set a fixed height for the images */
+    object-fit: cover; /* Display images with same size */
+  }
+  .card:hover {
+    transform: translateY(-20px);
+    transition: 0.4s ease-out;
+  }
+  .card:hover ~ .card {
+    position: relative;
+    left: 50px;
+    transition: 0.4s ease-out;
+  }
+  </style>
+{% endblock %}

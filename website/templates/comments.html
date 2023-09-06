@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  {% if current_user.id == 1 %}  <!-- Replace '1' with the admin user's ID -->
+    <h1>იუზერის კომენტარები</h1>
+
+    <div class="comments-container">
+    {% for item in items %}
+    <div class="card comment-card {% if item.success %}green{% elif item.processing %}yellow{% endif %}" data-comment-id="{{ item.id }}">
+        <h4>პროდუქცია: {{ item.category.name }}</h4>
+        <ul class="comments-list">
+           <li> ტელეფონი:{{ item.address }}</li>
+            <li> კომენტარი:{{ item.content }}</li>
+            
+        </ul>
+        <form action="{{ url_for('views.delete_comment', comment_id=item.id) }}" method="post">
+          <button type="submit" class="btn btn-danger">Delete</button>
+          <label>
+              <input type="checkbox" name="success" class="success-checkbox" {% if item.success %}checked{% endif %}>
+              Success
+          </label>
+          <label>
+              <input type="checkbox" name="processing" class="processing-checkbox" {% if item.processing %}checked{% endif %}>
+              Processing
+          </label>
+      </form>
+        
+    </div>
+{% endfor %}
+    </div>
+  {% else %}
+    <p>Access denied. Only admin users can access this page.</p>
+  {% endif %}
+{% else %}
+  <p>Please log in to access the admin dashboard.</p>
+{% endif %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const checkboxes = document.querySelectorAll(".success-checkbox, .processing-checkbox");
+
+    checkboxes.forEach(function(checkbox) {
+      checkbox.addEventListener("change", function() {
+        const card = this.closest(".card");
+        const commentId = card.getAttribute("data-comment-id");
+        const status = this.name; // success or processing
+
+        card.classList.toggle("green", status === "success" && this.checked);
+        card.classList.toggle("yellow", status === "processing" && this.checked);
+
+        fetch(`/update_comment/${commentId}?status=${status}&value=${this.checked}`, { method: 'POST' })
+          .then(response => {
+            if (response.status === 200) {
+              console.log("Comment status updated successfully in the database.");
+            }
+          });
+      });
+    });
+  });
+</script>
+
+
+
+    
+<style>
+
+
+input[type=checkbox]:hover {
+    box-shadow:0px 0px 10px #1300ff;
+}
+  .comments-container {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+     gap: 150px;
+   }
+  
+  /* Style for Success and Processing checkboxes */
+  .btn.btn-success,
+  .btn.btn-warning {
+      margin-top: 10px;
+  }
+  
+  /* Add yellow class for yellow-colored comments */
+  .yellow {
+      background-color: yellow;
+      /* Add any other styling you want for yellow comments */
+  }
+  
+  /* Add green class for green-colored comments */
+  .green {
+      background-color: lightgreen;
+      /* Add any other styling you want for green comments */
+  }
+ 
+  .card {
+     height: auto;
+     width: 400px;
+     border-radius: 10px;
+     box-shadow: 5px 5px #888888;
+     transition: 0.4s ease-out;
+     position: relative;
+  }
+ 
+  .comments-list {
+     list-style-type: none;
+     padding: 0;
+  }
+ 
+  /* Add this CSS to remove the space between grid items */
+  .comments-container::after {
+     content: "";
+     grid-column: span 1;
+  }
+</style>
+
+{% endblock %}

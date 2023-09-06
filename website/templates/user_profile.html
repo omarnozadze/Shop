@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<form method="POST" action="{{ url_for('auth.user_profile') }}">
+    <div class="form-group">
+        <label for="user_Name">სრული სახელი</label>
+        <input class="form-control" name="first_name" id="first_name" placeholder="first Name" value="{{user.first_name}}" required>
+    </div>
+    <div class="form-group">
+        <label for="exampleInputEmail1">მეილი</label>
+        <input  class="form-control" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" value="{{ user.email }}" required>
+    </div>
+    <div class="form-group">
+        <label for="phone_Number">ტელეფონის ნომერი</label>
+        <input type="tel" class="form-control" name="phone_Number" id="phone_Number" placeholder="Phone Number" value="{{ user.phone_Number }}" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="address">მისამართი</label>
+        <input class="form-control" name="address" id="address" placeholder="Address" value="{{user.address}}" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

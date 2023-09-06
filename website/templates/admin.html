@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  {% if current_user.id == 1 %}  <!-- Replace '1' with the admin user's ID -->
+    <h1>ადმინისტრატორის დაფა</h1>
+    <form method="POST" action="{{ url_for('views.admin') }}" enctype="multipart/form-data">
+      <div>
+        <label for="category">აირჩიე კატეგორია:</label>
+        <select id="category" name="category" class="form-select" aria-label="Default select example "required>
+          <option value="home" >მთავარი</option>
+          <option value="phonecase" >ლეპტოპის გამაგრილებელი</option>
+          <option value="protection">ჯოისტიკები</option>
+          <option value="charger">ფოვერ ბანკი</option>
+          <option value="headphone">ყურსასმენები/დინამიკები</option>
+          <option value="keyboard">კლავიატურა</option>
+          <option value="mouse">მაუსები/მაუსპადები</option>
+          <option value="others">სხვა...</option>
+        </select>
+      </div>
+      <div>
+        <label for="name" >სახელი:</label>
+        <input type="text" id="name" name="name" class="form-control" required>
+      </div>
+      <div>
+        <label for="description">აღწერა:</label>
+        <textarea id="description" name="description" required class="form-control"></textarea>
+      </div>
+      <div>
+        <label for="price">ფასი:</label>
+        <input type="number" id="price" name="price" step="1" class="form-control" required>
+      </div>
+      <div>
+        <label for="image">ატვირთეთ სურათი:</label>
+        <input type="file" name="files[]" multiple required autocomplete="off" >
+    </div>
+      <button type="submit">დამატება</button>
+    </form>
+
+
+  {% else %}
+    <p>Access denied. Only admin users can access this page.</p>
+  {% endif %}
+{% else %}
+  <p>Please log in to access the admin dashboard.</p>
+{% endif %}
+    
+
+
+
+{% endblock %}
